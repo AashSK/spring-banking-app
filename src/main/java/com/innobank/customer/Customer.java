@@ -1,4 +1,4 @@
-package com.innobank.Customer;
+package com.innobank.customer;
 
 import java.time.Instant;
 import java.util.UUID;
