@@ -4,21 +4,31 @@ import org.springframework.stereotype.Service;
 
 import com.innobank.customer.dto.CustomerRequest;
 import com.innobank.customer.dto.CustomerResponse;
+import com.innobank.customer.exception.CustomerExistsException;
+import com.innobank.customer.mapper.CustomerMapper;
 
 @Service
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CustomerMapper customerMapper;
 
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
+        this.customerMapper = customerMapper;
     }
 
     public CustomerResponse createCustomer(CustomerRequest request) {
 
-        Customer customer = customerRepository.save(new Customer(
-                request.firstName(), request.lastName(), request.email()));
-        // next get the customer by the uuid and return the customerResponse
+        var existingCustomer = customerRepository.findByEmail(request.email());
+
+        if (existingCustomer.isPresent()) {
+            throw new CustomerExistsException("Customer with Provided Email:" + request.email() + "already exists!!");
+        }
+
+        Customer customer = customerRepository.save(customerMapper.toEntity(request));
+
+        return customerMapper.toResponse(customer);
     }
 
 }

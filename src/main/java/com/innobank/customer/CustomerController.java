@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.innobank.customer.dto.CustomerRequest;
 import com.innobank.customer.dto.CustomerResponse;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,8 +24,9 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
+    @Transactional
     @PostMapping
-    public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerRequest request) {
+    public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest request) {
         CustomerResponse res = customerService.createCustomer(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(res);
