@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 
 import com.innobank.customer.dto.CustomerRequest;
 import com.innobank.customer.dto.CustomerResponse;
-import com.innobank.customer.exception.CustomerExistsException;
+import com.innobank.customer.exception.DuplicateEmailException;
 import com.innobank.customer.mapper.CustomerMapper;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class CustomerService {
@@ -18,12 +20,13 @@ public class CustomerService {
         this.customerMapper = customerMapper;
     }
 
+    @Transactional
     public CustomerResponse createCustomer(CustomerRequest request) {
 
         var existingCustomer = customerRepository.findByEmail(request.email());
 
         if (existingCustomer.isPresent()) {
-            throw new CustomerExistsException("Customer with Provided Email:" + request.email() + "already exists!!");
+            throw new DuplicateEmailException(request.email());
         }
 
         Customer customer = customerRepository.save(customerMapper.toEntity(request));

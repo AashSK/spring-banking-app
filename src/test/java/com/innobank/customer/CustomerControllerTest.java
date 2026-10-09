@@ -89,7 +89,7 @@ public class CustomerControllerTest {
         mockMvc.perform(post("/api/v1/customers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isConflict());
     }
 
 }

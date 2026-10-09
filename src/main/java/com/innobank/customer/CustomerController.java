@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.innobank.customer.dto.CustomerRequest;
 import com.innobank.customer.dto.CustomerResponse;
-import com.innobank.customer.exception.CustomerExistsException;
 
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -25,15 +23,10 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @Transactional
     @PostMapping
     public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest request) {
-        try {
-            CustomerResponse res = customerService.createCustomer(request);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(res);
-        } catch (CustomerExistsException e) {// Change this later to GlobalExceptionHandler
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        CustomerResponse res = customerService.createCustomer(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(res);
     }
 }
