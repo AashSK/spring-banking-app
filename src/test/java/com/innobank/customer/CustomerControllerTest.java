@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -39,6 +41,12 @@ public class CustomerControllerTest {
                                 """))
                 .andExpect(status().isCreated());
 
+        var customer = customerRepository.findByEmail("john@example.com")
+                .orElseThrow(() -> new AssertionError("Customer was not persisted"));
+
+        assertEquals("John", customer.getFirstName());
+        assertEquals("Doe", customer.getLastName());
+        assertEquals("john@example.com", customer.getEmail());
     }
 
     @Test
@@ -55,6 +63,7 @@ public class CustomerControllerTest {
                                 """))
                 .andExpect(status().isBadRequest());
 
+        assertFalse(customerRepository.findByEmail("john@example.com").isPresent());
     }
 
     @Test
@@ -69,6 +78,7 @@ public class CustomerControllerTest {
                         }
                         """))
                 .andExpect(status().isBadRequest());
+        assertEquals(0, customerRepository.count());
     }
 
     @Test
@@ -90,6 +100,8 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isConflict());
+
+        assertEquals(1, customerRepository.count());
     }
 
 }
