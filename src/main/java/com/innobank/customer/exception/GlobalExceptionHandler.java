@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /*----
+    TODO: 
+    1. currently two types of error Response unify later 
+    2. Don't expose raw database exception details to clients
+    */
+
     @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<String> handleCustomerExiists(DuplicateEmailException exception) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());

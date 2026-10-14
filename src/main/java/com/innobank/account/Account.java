@@ -56,6 +56,7 @@ public class Account {
     @Column(name = "account_number", nullable = false, unique = true, length = 34)
     private String accountNumber;
 
+    @Setter(AccessLevel.NONE)
     @Enumerated(EnumType.STRING)
     @Column(name = "account_type", nullable = false, length = 7)
     private AccountType accountType;

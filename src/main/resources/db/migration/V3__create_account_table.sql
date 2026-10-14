@@ -10,7 +10,7 @@ CREATE TABLE account (
         CHECK (account_type IN ('CURRENT', 'SAVINGS')),
 
     currency VARCHAR(3) NOT NULL
-            CHECK (currency = 'EUR'),
+        CHECK (currency = 'EUR'),
 
     balance_minor BIGINT NOT NULL,
 
